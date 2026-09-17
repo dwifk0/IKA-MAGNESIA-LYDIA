@@ -5,8 +5,10 @@ trafik, **8 baytlık sabit uzunlukta çerçevelerle** tek bir USB CDC bağlantı
 üzerinden akar. Bu belge o sözleşmenin tamamıdır: iki taraf birbirinin kodunu
 görmeden, yalnız buraya bakarak çalışabilir.
 
-> Bu depoda kart firmware'inin kaynağı yayımlanmamıştır. Yayımlanan şey
-> **arayüzdür** — karşı tarafı yazabilmek için gereken her şey burada.
+> Kartın tam firmware'i yayımlanmamıştır, ama çerçeveleme, iBUS çözümü,
+> emniyet mandalları ve direksiyon jog profili platformdan bağımsız modüller
+> hâlinde [`firmware/cekirdek/`](../firmware/cekirdek/) altında — masaüstünde
+> derlenip test edilebiliyor.
 
 ---
 
@@ -15,16 +17,28 @@ görmeden, yalnız buraya bakarak çalışabilir.
 Her paket **8 bayt**, sabit:
 
 ```
-┌──────┬──────┬──────────────┬──────────────┬──────┐
-│ 0xAA │ tip  │   v0 (int16) │   v1 (int16) │ CRC  │
-│ 1 B  │ 1 B  │     2 B      │     2 B      │ 2 B  │
-└──────┴──────┴──────────────┴──────────────┴──────┘
+┌──────┬──────┬────────┬────────┬────────┬────────┬──────┬──────┐
+│ 0xAA │ tip  │ v0 yük │ v0 düş │ v1 yük │ v1 düş │ XOR  │ 0x55 │
+└──────┴──────┴────────┴────────┴────────┴────────┴──────┴──────┘
+   0      1       2        3        4        5       6      7
 ```
 
-- `v0` / `v1` işaretli 16-bit, **little-endian**
+- `v0` / `v1` işaretli 16-bit, **big-endian** (yüksek bayt önce)
 - Anlamı tamamen `tip` alanına bağlı
-- Çerçeve bütünlüğü CRC ile doğrulanır; bozuk çerçeve **sessizce atılır** ve
-  `0x3C` sayacını artırır
+- `XOR` = bayt[1] ^ bayt[2] ^ bayt[3] ^ bayt[4] ^ bayt[5]
+- Bütünlük üç şartla doğrulanır: baş baytı `0xAA`, bitiş baytı `0x55`, XOR
+  tutuyor. Üçünden biri tutmazsa çerçeve **sessizce atılır** ve `0x3C`
+  sayacını artırır
+
+Çalışan uygulama ve birim testleri:
+[`firmware/cekirdek/cerceve.h`](../firmware/cekirdek/cerceve.h) ·
+[`firmware/test/test_cerceve.cpp`](../firmware/test/test_cerceve.cpp)
+
+> **Yarım çerçeve 20 ms'de bırakılır.** Bu olmazsa tek bir kayıp bayt senkronu
+> kaydırabilir: toplayıcı bir sonraki `0xAA`'yı arar ve veri baytlarından biri
+> `0xAA` ise çerçevenin **ortasından** senkron kurar — hat sessizce ölür, hata
+> da vermez. Kaymanın kalıcı olup olmadığını verinin içeriği belirlediği için
+> bu zaman aşımı şansa bırakılamaz.
 
 **Sürüm kontrolü:** `0x3B` paketi protokol sürümünü ve firmware yapı numarasını
 taşır. Köprü **protokol sürümüne** bakar; yapı numarası yalnız izleme içindir.

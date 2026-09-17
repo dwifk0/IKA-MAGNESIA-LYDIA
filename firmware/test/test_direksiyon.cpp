@@ -1,0 +1,64 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 Ahmet Efe Nezli
+#include "test.h"
+#include "../cekirdek/direksiyon_jog.h"
+using namespace direksiyon;
+
+int main() {
+    // ── olu bant disari tasiniyor, kirpilmiyor ──────────────────────────
+    t::esit("bant icinde sifir",        0, sapma_duzelt(30, 50));
+    t::esit("bant kenarinda sifir",     0, sapma_duzelt(50, 50));
+    t::esit("bant disinda kaydirilmis", 1, sapma_duzelt(51, 50));
+    t::esit("negatif tarafta da",      -1, sapma_duzelt(-51, 50));
+    // Kirpilsaydi 51 -> 51 olurdu ve bant kenarinda cikti sifirdan 51'e
+    // sicrardi. Tasiniyor, o yuzden sifirdan duzgun buyuyor.
+
+    JogAyar a{};
+    a.jog_hz_max = 10000; a.onde_max = 400;
+    a.merkez_hz = 2000;   a.merkez_olu = 20; a.limit_adim = 20000;
+
+    // ── jog: kol sapmasi hedefi ilerletiyor ─────────────────────────────
+    {
+        int32_t h = hedef_hesapla(a, 500, 500, 0, 0, 10);   // tam sapma, 10 ms
+        t::esit("tam sapmada 10 ms'de 100 adim", 100, h);
+    }
+
+    // ── 🔴 hedef gercek konumun cok onune gecemez ───────────────────────
+    // Gecseydi kol birakildiginda motor biriken farki kapatmak icin donmeye
+    // devam ederdi: "birakinca durmuyor".
+    {
+        int32_t h = hedef_hesapla(a, 500, 500, 0, 5000, 10);
+        t::esit("hedef onde_max ile kelepcelendi", 400, h);
+    }
+
+    // ── merkeze donus kademeli ──────────────────────────────────────────
+    {
+        int32_t h = hedef_hesapla(a, 0, 500, 1000, 1000, 10);
+        t::esit("merkeze donus adim adim", 980, h);   // 2000 Hz * 10 ms = 20
+        // Dogrudan 0 yazilsaydi hedef konumun cok onune atlardi, kelepce her
+        // tikte devreye girer ve hareket rampasiz, tek hizda olurdu.
+    }
+    {
+        int32_t h = hedef_hesapla(a, 0, 500, 5, 5, 10);
+        t::esit("merkez olu bandinda tam sifir", 0, h);
+    }
+    {
+        JogAyar b = a; b.merkez_hz = 0;
+        int32_t h = hedef_hesapla(b, 0, 500, 1234, 1234, 10);
+        t::esit("merkeze donus kapaliysa yerinde kalir", 1234, h);
+    }
+
+    // ── yumusak sinir ───────────────────────────────────────────────────
+    {
+        JogAyar b = a; b.limit_adim = 150; b.onde_max = 100000;
+        int32_t h = hedef_hesapla(b, 500, 500, 0, 140, 100);
+        t::esit("yumusak sinirda duruyor", 150, h);
+    }
+
+    // ── guvenli hiz: v = sqrt(2*a*s) ────────────────────────────────────
+    t::esit("ivme 50000, pay 100 -> 3162", 3162, guvenli_hiz(50000, 100));
+    t::esit("pay yoksa hiz yok",              0, guvenli_hiz(50000, 0));
+    t::esit("pay negatifse hiz yok",          0, guvenli_hiz(50000, -5));
+    // Bu degeri asan bir hiz, sinira carpmadan duramaz.
+    return t::rapor("direksiyon");
+}

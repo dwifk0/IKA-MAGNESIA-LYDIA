@@ -21,3 +21,9 @@ kalibrasyon.h
 arac_kayit/
 
 .DS_Store
+
+# masaustu test ciktilari
+firmware/test/t_cerceve
+firmware/test/t_emniyet
+firmware/test/t_ibus
+firmware/test/t_direksiyon

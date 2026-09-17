@@ -17,11 +17,12 @@ Drive-board architecture, serial protocol and safety chain of an autonomous grou
 The embedded side of **LYDİA**, a **finalist** in the TEKNOFEST 2026 Unmanned
 Ground Vehicle competition. MCBÜ **MAGNESİA** team.
 
-> **This is a documentation repository.** The drive board's firmware source is
-> not published here; what is published is the **interface and the
-> architecture** — everything needed to write the other side from scratch. The
-> vehicle's measured calibration constants are likewise absent; what replaces
-> them is how each one is measured.
+> The board's complete firmware is not published. What is published is the
+> **architecture, the interface, and the firmware's reusable core**: framing,
+> iBUS decoding, safety latches and the steering jog profile as
+> platform-independent modules, with **75 unit tests that run on a desktop**.
+> The vehicle's measured calibration constants are absent; what replaces them
+> is how each one is measured.
 
 > The detailed documents under [`docs/`](docs/) are in Turkish.
 
@@ -54,6 +55,7 @@ computer dies completely.** The RC receiver is wired straight to the board.
 | [`KONTROLCU_KABLO_HARITASI.md`](docs/KONTROLCU_KABLO_HARITASI.md) | Reverse-engineered wiring of the main motor controller |
 | [`USB_BAGLANTI.md`](docs/USB_BAGLANTI.md) | Board-to-computer link: options weighed against each other |
 | [`ARIZA_GUNLUGU.md`](docs/ARIZA_GUNLUGU.md) | Seven field faults and how each was found |
+| [`firmware/OKUBENI.md`](firmware/OKUBENI.md) | Core modules, unit tests and bench tests |
 
 ---
 
@@ -110,12 +112,44 @@ The read-back turns "did it stick?" from a guess into a measurement.
 ## Repository layout
 
 ```
+firmware/cekirdek/    Platform-independent modules split out of the main firmware
+firmware/test/        75 unit tests that run on a desktop — no board needed
+firmware/tezgah/      16 bench tests: sketch + dashboard + wiring document
 docs/                 Protocol, safety, calibration, wiring, fault log
 bms/                  Services reading two BMS units over BLE, plus the protocol work
 kamera/               Camera streaming, 180° rotation and recording server
 varlik/               Architecture diagram (light / dark)
 kalibrasyon.ornek.h   Placeholder constant definitions — values left empty
 ```
+
+### Tests that need no hardware
+
+```bash
+cd firmware/test && make
+```
+
+```
+cerceve                     23 gecti, 0 kaldi
+emniyet                     23 gecti, 0 kaldi
+ibus                        16 gecti, 0 kaldi
+direksiyon                  13 gecti, 0 kaldi
+```
+
+The parts of the driving logic that do not touch hardware were extracted into
+separate modules; none of them calls `digitalRead`, `millis` or `Serial`. The
+same code runs on the board and compiles on a desktop with `g++` under
+`-Wall -Wextra -Wpedantic -Werror`. Details (in Turkish):
+[`firmware/OKUBENI.md`](firmware/OKUBENI.md).
+
+### Bench tests
+
+Every part is verified **on the bench, on its own, before it goes on the
+vehicle**: a sketch on the board, a dashboard in the browser, a `BAGLANTI.md`
+wiring document. Parts that passed carry a `SONUC.md` with the measured values.
+
+**Why one at a time:** bolting five things onto a vehicle and saying "it does
+not work" means confusing five faults with each other. It happened twice on
+this project.
 
 ### Reading the BMS units
 
@@ -133,8 +167,9 @@ drops, the values **freeze** rather than clear — so the thing to check is the
 
 ## Deliberately not in this repository
 
-- **The drive board's firmware source and compiled binaries.** Its interface is
-  fully documented; its implementation is not.
+- **The board's complete firmware and compiled binaries.** Its core modules,
+  its interface and the bench tests are here; the full driving decision, mode
+  arbiter and telemetry loop are not.
 - **The vehicle's measured calibration values.** Placeholders and measurement
   procedures stand in their place.
 - **The autonomy stack and the ground-station interface.** Developed together

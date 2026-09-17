@@ -17,10 +17,11 @@ Otonom kara aracının sürüş kartı mimarisi, seri protokolü ve emniyet zinc
 TEKNOFEST 2026 İnsansız Kara Aracı yarışmasında **finalist** olan **LYDİA**
 aracının gömülü tarafı. MCBÜ **MAGNESİA** takımı.
 
-> **Bu bir belge deposudur.** Sürüş kartının firmware kaynağı burada
-> yayımlanmamıştır; yayımlanan şey **arayüz ve mimaridir** — karşı tarafı
-> sıfırdan yazabilmek için gereken her şey. Araca ait ölçülmüş kalibrasyon
-> sayıları da yer almaz; yerlerine nasıl ölçüldükleri yazılıdır.
+> Kartın tam firmware'i yayımlanmamıştır. Yayımlanan şey **mimari, arayüz ve
+> firmware'in yeniden kullanılabilir çekirdeği**: çerçeveleme, iBUS çözümü,
+> emniyet mandalları ve direksiyon jog profili platformdan bağımsız modüller
+> hâlinde, **masaüstünde koşan 75 birim testiyle** birlikte. Araca ait ölçülmüş
+> kalibrasyon sayıları yer almaz; yerlerine nasıl ölçüldükleri yazılıdır.
 
 ---
 
@@ -50,6 +51,7 @@ Bu ayrımın pratik sonucu şu: **üst bilgisayar tamamen çökse bile manuel s�
 | [`KONTROLCU_KABLO_HARITASI.md`](docs/KONTROLCU_KABLO_HARITASI.md) | Ana motor kontrolcüsünün kablo çözümlemesi |
 | [`USB_BAGLANTI.md`](docs/USB_BAGLANTI.md) | Kart–bilgisayar bağlantısı için seçenek değerlendirmesi |
 | [`ARIZA_GUNLUGU.md`](docs/ARIZA_GUNLUGU.md) | Sahada yaşanmış yedi arıza ve nasıl bulundukları |
+| [`firmware/OKUBENI.md`](firmware/OKUBENI.md) | Çekirdek modüller, birim testler ve tezgâh testleri |
 
 ---
 
@@ -106,12 +108,43 @@ sorusunu tahminden çıkarır.
 ## Depoda ne var
 
 ```
+firmware/cekirdek/    Ana firmware'den ayrılmış platformdan bağımsız modüller
+firmware/test/        Masaüstünde koşan 75 birim test — kart gerekmez
+firmware/tezgah/      16 tezgâh testi: sketch + pano + kablo belgesi
 docs/                 Protokol, emniyet, kalibrasyon, bağlantı, arıza günlüğü
 bms/                  İki BMS'i BLE üzerinden okuyan servisler ve protokol çözümü
 kamera/               Kamera akışı, 180° çevirme ve kayıt sunucusu
 varlik/               Mimari şeması (açık / koyu tema)
 kalibrasyon.ornek.h   Sabitlerin yer tutucu tanımları — değerler boş
 ```
+
+### Kartsız çalışan testler
+
+```bash
+cd firmware/test && make
+```
+
+```
+cerceve                     23 gecti, 0 kaldi
+emniyet                     23 gecti, 0 kaldi
+ibus                        16 gecti, 0 kaldi
+direksiyon                  13 gecti, 0 kaldi
+```
+
+Sürüş mantığının donanıma dokunmayan kısımları ayrı modüllere çıkarıldı;
+hiçbiri `digitalRead`, `millis` ya da `Serial` çağırmıyor. Aynı kod hem kartta
+koşuyor hem `g++` ile masaüstünde test ediliyor
+(`-Wall -Wextra -Wpedantic -Werror`). Ayrıntı:
+[`firmware/OKUBENI.md`](firmware/OKUBENI.md).
+
+### Tezgâh testleri
+
+Her parça **araca takılmadan önce, masada, tek başına** doğrulanır: kartta
+koşan sketch, tarayıcıda açılan pano, `BAGLANTI.md` kablo belgesi. Testi geçen
+parçaların klasörlerinde ölçülen değerlerle birlikte `SONUC.md` var.
+
+**Neden tek tek:** araca beş şey birden takıp "çalışmıyor" demek, beş arızayı
+birbirine karıştırmak demektir. Bu projede iki kez yaşandı.
 
 ### BMS okuma
 
@@ -128,8 +161,9 @@ verinin **yaşına** bakmak gerekiyor.
 
 ## Bu depoda bilerek olmayanlar
 
-- **Sürüş kartının firmware kaynağı ve derlenmiş ikilileri.** Arayüzü tamamen
-  belgelidir; uygulaması değil.
+- **Kartın tam firmware'i ve derlenmiş ikilileri.** Çekirdek modülleri,
+  arayüzü ve tezgâh testleri burada; sürüş kararı, kip hakemi ve telemetri
+  döngüsünün tamamı değil.
 - **Araca ait ölçülmüş kalibrasyon değerleri.** Yerlerinde yer tutucu ve ölçüm
   yordamı var.
 - **Otonomi paketi ve yer istasyonu arayüzü.** Takımın diğer üyeleriyle ortak
