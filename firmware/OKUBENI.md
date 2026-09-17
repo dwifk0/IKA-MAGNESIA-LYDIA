@@ -27,12 +27,15 @@ masaüstünde `g++` ile derlenip test ediliyor.
 | [`cerceve.h`](cekirdek/cerceve.h) | 8 baytlık çerçeve: kur, çöz, bayt başına toplayıcı, teşhis sayaçları |
 | [`ibus.h`](cekirdek/ibus.h) | FlySky iBUS çözücü, yeniden senkron, Hz penceresi |
 | [`emniyet.h`](cekirdek/emniyet.h) | Acil stop izleme, arıza kilidi, fren stall mandalı |
+| [`kip_hakemi.h`](cekirdek/kip_hakemi.h) | **Sürüş yetkisi kimde:** güvenlik kümeleri, kip geçişi |
+| [`gaz_profili.h`](cekirdek/gaz_profili.h) | Manuel gaz tavanı (pot), otonom m/s → volt, kalkış darbesi |
 | [`direksiyon_jog.h`](cekirdek/direksiyon_jog.h) | Jog profili, merkeze dönüş, yumuşak sınır, güvenli hız |
+| [`taret_jog.h`](cekirdek/taret_jog.h) | Pan/tilt jog, üstel eğri, sınırların birikim üzerinde uygulanması |
 
 Araca özel ölçülmüş sabit yok; hepsi çağıran tarafın verdiği parametreler.
 Değerler nasıl ölçülür: [`../docs/KALIBRASYON.md`](../docs/KALIBRASYON.md).
 
-## `test/` — kartsız çalışan 75 test
+## `test/` — kartsız çalışan 138 test
 
 ```bash
 cd firmware/test && make
@@ -43,6 +46,8 @@ cerceve                     23 gecti, 0 kaldi
 emniyet                     23 gecti, 0 kaldi
 ibus                        16 gecti, 0 kaldi
 direksiyon                  13 gecti, 0 kaldi
+kip hakemi                  36 gecti, 0 kaldi
+gaz + taret                 27 gecti, 0 kaldi
 ```
 
 Bağımlılık yok: `g++`, `make` ve 40 satırlık bir assert başlığı. Derleme
@@ -59,6 +64,15 @@ Testler yalnız "çalışıyor mu" demiyor, **neden böyle yazıldığını** g�
 - Çırpınan bir sağlık bayrağının neden kilide çevrildiği
 - Jog hedefinin gerçek konumun çok önüne geçmesinin "bırakınca durmuyor"
   hissini nasıl ürettiği
+- **Güvenlik > kumanda > üst bilgisayar** sırasının otonom kipte de
+  bozulmadığı — beş güvenlik sebebinden her birinin tek başına yettiği
+- "Gazı kes" ile "freni bas"ın neden ayrı kümeler olduğu
+- Kip geçişinde komutun neden sıfırlandığı (bayat bir hız komutu aracı
+  kendiliğinden kaldırır)
+- Gaz tavanı potunun kanalı bozulduğunda neden **tam güce** dönüldüğü,
+  sıfıra değil
+- Taret açısının neden `float` tutulduğu — tamsayıda 0,6°/tik her tikte
+  sıfıra yuvarlanır ve taret hiç kımıldamaz
 
 > Bir test yazarken bir hatam ortaya çıktı: senkron kaybının **her zaman
 > kalıcı olmadığını** buldum — veri baytlarından biri `0xAA` değilse toplayıcı
@@ -83,6 +97,11 @@ Testi geçen parçaların klasörlerinde `SONUC.md` var — ölçülen değerler
 
 ## Burada olmayan
 
-Kartın tam firmware'i (kip hakemi, sürüş kararı, telemetri döngüsü, taret
-sürüşü) ve derlenmiş ikilileri yayımlanmamıştır. Yayımlanan şey, o firmware'in
-**yeniden kullanılabilir ve test edilebilir** parçalarıdır.
+Firmware'in donanıma bağlı katmanı: pin tanımları, zamanlayıcı ve kesme
+kurulumu, DAC/PWM sürücüleri, I²C sensör okuyucuları, telemetri döngüsünün
+zamanlaması ve derlenmiş ikililer. Bunlar karta özgü ve tek başlarına taşınmaz.
+
+Yayımlanan şey **karar katmanı**: sürüş yetkisinin kime ait olduğu, hangi
+durumun hangi aktüatörü nasıl etkilediği, bir komutun nasıl gerilime
+dönüştüğü. Araca özel ölçülmüş hiçbir sabit yok — hepsi çağıran tarafın
+verdiği parametreler.

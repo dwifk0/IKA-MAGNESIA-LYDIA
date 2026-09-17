@@ -18,9 +18,9 @@ TEKNOFEST 2026 İnsansız Kara Aracı yarışmasında **finalist** olan **LYDİA
 aracının gömülü tarafı. MCBÜ **MAGNESİA** takımı.
 
 > Kartın tam firmware'i yayımlanmamıştır. Yayımlanan şey **mimari, arayüz ve
-> firmware'in yeniden kullanılabilir çekirdeği**: çerçeveleme, iBUS çözümü,
-> emniyet mandalları ve direksiyon jog profili platformdan bağımsız modüller
-> hâlinde, **masaüstünde koşan 75 birim testiyle** birlikte. Araca ait ölçülmüş
+> firmware'in karar katmanı**: çerçeveleme, iBUS çözümü, emniyet mandalları,
+> kip hakemi, gaz profili ve jog mantığı platformdan bağımsız modüller
+> hâlinde, **masaüstünde koşan 138 birim testiyle** birlikte. Araca ait ölçülmüş
 > kalibrasyon sayıları yer almaz; yerlerine nasıl ölçüldükleri yazılıdır.
 
 ---
@@ -109,7 +109,7 @@ sorusunu tahminden çıkarır.
 
 ```
 firmware/cekirdek/    Ana firmware'den ayrılmış platformdan bağımsız modüller
-firmware/test/        Masaüstünde koşan 75 birim test — kart gerekmez
+firmware/test/        Masaüstünde koşan 138 birim test — kart gerekmez
 firmware/tezgah/      16 tezgâh testi: sketch + pano + kablo belgesi
 docs/                 Protokol, emniyet, kalibrasyon, bağlantı, arıza günlüğü
 bms/                  İki BMS'i BLE üzerinden okuyan servisler ve protokol çözümü
@@ -129,6 +129,8 @@ cerceve                     23 gecti, 0 kaldi
 emniyet                     23 gecti, 0 kaldi
 ibus                        16 gecti, 0 kaldi
 direksiyon                  13 gecti, 0 kaldi
+kip hakemi                  36 gecti, 0 kaldi
+gaz + taret                 27 gecti, 0 kaldi
 ```
 
 Sürüş mantığının donanıma dokunmayan kısımları ayrı modüllere çıkarıldı;

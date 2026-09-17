@@ -18,9 +18,10 @@ The embedded side of **LYDİA**, a **finalist** in the TEKNOFEST 2026 Unmanned
 Ground Vehicle competition. MCBÜ **MAGNESİA** team.
 
 > The board's complete firmware is not published. What is published is the
-> **architecture, the interface, and the firmware's reusable core**: framing,
-> iBUS decoding, safety latches and the steering jog profile as
-> platform-independent modules, with **75 unit tests that run on a desktop**.
+> **architecture, the interface, and the firmware's decision layer**: framing,
+> iBUS decoding, safety latches, the mode arbiter, the throttle profile and jog
+> logic as platform-independent modules, with **138 unit tests that run on a
+> desktop**.
 > The vehicle's measured calibration constants are absent; what replaces them
 > is how each one is measured.
 
@@ -113,7 +114,7 @@ The read-back turns "did it stick?" from a guess into a measurement.
 
 ```
 firmware/cekirdek/    Platform-independent modules split out of the main firmware
-firmware/test/        75 unit tests that run on a desktop — no board needed
+firmware/test/        138 unit tests that run on a desktop — no board needed
 firmware/tezgah/      16 bench tests: sketch + dashboard + wiring document
 docs/                 Protocol, safety, calibration, wiring, fault log
 bms/                  Services reading two BMS units over BLE, plus the protocol work
@@ -133,6 +134,8 @@ cerceve                     23 gecti, 0 kaldi
 emniyet                     23 gecti, 0 kaldi
 ibus                        16 gecti, 0 kaldi
 direksiyon                  13 gecti, 0 kaldi
+kip hakemi                  36 gecti, 0 kaldi
+gaz + taret                 27 gecti, 0 kaldi
 ```
 
 The parts of the driving logic that do not touch hardware were extracted into

@@ -27,3 +27,5 @@ firmware/test/t_cerceve
 firmware/test/t_emniyet
 firmware/test/t_ibus
 firmware/test/t_direksiyon
+firmware/test/t_kip
+firmware/test/t_gaz_taret

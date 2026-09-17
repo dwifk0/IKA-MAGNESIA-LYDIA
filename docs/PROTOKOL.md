@@ -5,10 +5,11 @@ trafik, **8 baytlık sabit uzunlukta çerçevelerle** tek bir USB CDC bağlantı
 üzerinden akar. Bu belge o sözleşmenin tamamıdır: iki taraf birbirinin kodunu
 görmeden, yalnız buraya bakarak çalışabilir.
 
-> Kartın tam firmware'i yayımlanmamıştır, ama çerçeveleme, iBUS çözümü,
-> emniyet mandalları ve direksiyon jog profili platformdan bağımsız modüller
-> hâlinde [`firmware/cekirdek/`](../firmware/cekirdek/) altında — masaüstünde
-> derlenip test edilebiliyor.
+> Kartın tam firmware'i yayımlanmamıştır, ama karar katmanının tamamı —
+> çerçeveleme, iBUS çözümü, emniyet mandalları, kip hakemi, gaz profili ve jog
+> mantığı — platformdan bağımsız modüller hâlinde
+> [`firmware/cekirdek/`](../firmware/cekirdek/) altında ve masaüstünde 138
+> birim testle doğrulanıyor.
 
 ---
 
