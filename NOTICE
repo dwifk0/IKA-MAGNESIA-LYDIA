@@ -1,0 +1,43 @@
+İKA · MAGNESİA · LYDİA
+Copyright (C) 2026 Ahmet Efe Nezli (dwifk0 <ahmetefenezli@gmail.com>)
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License, version 3 only, as
+published by the Free Software Foundation. See the LICENSE file.
+
+Documentation, drawings and diagrams under docs/ and varlik/ are licensed under
+Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
+    https://creativecommons.org/licenses/by-sa/4.0/
+
+--------------------------------------------------------------------------
+Third-party components
+--------------------------------------------------------------------------
+
+Used but not redistributed here; each remains under its own license and its
+own copyright holders.
+
+  bleak                      MIT — BLE client used by the BMS services
+  ROS 2 Humble Hawksbill     Apache-2.0
+  Nav2                       Apache-2.0
+  STM32 HAL / PlatformIO     per ST and PlatformIO terms
+
+Device protocol notes under bms/ describe formats determined by observing
+traffic from hardware the author owns. No vendor software or documentation is
+reproduced.
+
+--------------------------------------------------------------------------
+Not included in this repository
+--------------------------------------------------------------------------
+
+  * The drive board firmware (source and binaries). The serial interface it
+    implements is fully documented under docs/PROTOKOL.md; the implementation
+    is not published.
+  * Measured calibration constants for the vehicle. kalibrasyon.ornek.h carries
+    the structure with values left at zero; docs/KALIBRASYON.md documents how
+    each one is measured.
+  * The autonomy stack and the PyQt ground-station interface, developed jointly
+    with other members of the team — their work, not the author's to publish.
+  * Purchasing records, supplier links and cost data.
+  * Network configuration, credentials, IP addresses and Bluetooth device
+    addresses, which are replaced with placeholders such as <ARAC_IP> and
+    AA:BB:CC:DD:EE:FF.

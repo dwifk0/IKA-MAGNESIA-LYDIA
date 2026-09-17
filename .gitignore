@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# firmware kaynagi ve ikilileri bu depoya girmez
+*.bin
+*.elf
+*.hex
+F767_FIRMWARE/
+ARAC_FIRMWARE/
+
+# olculmus kalibrasyon
+kalibrasyon.h
+*.local.*
+
+# kayitlar
+*.csv
+*.mkv
+*.mp4
+arac_kayit/
+
+.DS_Store
