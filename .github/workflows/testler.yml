@@ -1,0 +1,21 @@
+# Cekirdek modullerin birim testleri. Kart, kutuphane ve arac gerekmez:
+# testler saf C++17, yalnizca g++ ile derlenip kosturuluyor.
+# Bir test kalirsa `bitir()` 1 dondurur, make basarisiz olur, is kirmizi olur.
+name: testler
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  birim-testleri:
+    name: birim testleri (g++ / -Werror)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: g++ surumu
+        run: g++ --version
+      - name: derle ve kostur
+        run: make -C firmware/test

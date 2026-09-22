@@ -8,7 +8,7 @@ görmeden, yalnız buraya bakarak çalışabilir.
 > Kartın tam firmware'i yayımlanmamıştır, ama karar katmanının tamamı —
 > çerçeveleme, iBUS çözümü, emniyet mandalları, kip hakemi, gaz profili ve jog
 > mantığı — platformdan bağımsız modüller hâlinde
-> [`firmware/cekirdek/`](../firmware/cekirdek/) altında ve masaüstünde 138
+> [`firmware/cekirdek/`](../firmware/cekirdek/) altında ve masaüstünde 148
 > birim testle doğrulanıyor.
 
 ---
@@ -165,9 +165,14 @@ yapılan tek yolu budur.
 
 ## Ayar kimlikleri — `0x09` / `0x3E`
 
-Kalibrasyon sabitleri firmware'e gömülü değildir; çalışma anında yazılır ve
-kalıcı bellekte tutulur. `0x3E` ile kartta **duran** değer geri okunabilir —
-yani "yazdım mı, tuttu mu" sorusu tahminle değil ölçümle cevaplanır.
+Kalibrasyon sabitleri firmware'e gömülü değildir; çalışma anında yazılır.
+`0x3E` ile kartta **duran** değer geri okunabilir — yani "yazdım mı, tuttu mu"
+sorusu tahminle değil ölçümle cevaplanır.
+
+> ⚠ Yazılan değerler **RAM'de** durur, flash'a yazılmaz: reset sonrası derleme
+> varsayılanlarına dönerler. Reset, `0x35` paketindeki çalışma süresi sayacının
+> sıfırlanmasından anlaşılır ve sabitlerin yeniden gönderilmesi **köprünün
+> sorumluluğundadır**.
 
 | Kimlik | Ayar | Birim |
 |---|---|---|

@@ -1,9 +1,14 @@
 # Kalibrasyon — sabitler ve nasıl ölçüldükleri
 
-Sürüş kartındaki hiçbir kalibrasyon sabiti koda gömülü değildir. Hepsi çalışma
-anında `0x09` paketiyle yazılır, kalıcı bellekte tutulur ve `0x3E` ile geri
-okunur. Bu ayrım bilinçlidir: **sabit değişince firmware yeniden derlenmez**,
-dolayısıyla sahada ölçüp sahada yazabilirsiniz.
+Sürüş kartındaki kalibrasyon sabitleri çalışma anında `0x09` paketiyle yazılır
+ve `0x3E` ile geri okunur. Bu ayrım bilinçlidir: **sabit değişince firmware
+yeniden derlenmez**, dolayısıyla sahada ölçüp sahada yazabilirsiniz.
+
+> ⚠ **Kalıcılık kartta değil.** Yazılan değerler RAM'de durur; kart resetlenirse
+> (watchdog dahil) `config.h`'deki derleme varsayılanlarına döner. Kalıcılığı
+> bugün köprü sağlıyor: `0x35` sağlık paketindeki çalışma süresi sayacı sıfıra
+> dönünce reset anlaşılır ve sabitler yeniden gönderilir. Flash'a alınması
+> açık bir maddedir.
 
 > **Bu depoda ölçülmüş değerler yoktur.** Aşağıdaki yordamlar, aynı sabitleri
 > kendi aracınızda üretmeniz için yeterlidir. Yer tutucu dosya:

@@ -59,8 +59,13 @@ int32_t guvenli_hiz(int32_t ivme_adim_s2, int32_t kalan_pay_adim) {
     // v = sqrt(2 * a * s) — tamsayi karekok (Newton), kayan nokta istemeden.
     uint64_t x = 2ULL * (uint64_t)ivme_adim_s2 * (uint64_t)kalan_pay_adim;
     if (x == 0) return 0;
-    uint64_t k = x, onceki = 0;
-    while (k != onceki) { onceki = k; k = (k + x / k) / 2; }
+    // Newton yinelemesi YUKARIDAN yaklasir ve tam karekokten once monoton
+    // AZALIR; durma olcutu bu yuzden "artik azalmiyor" olmali.
+    // ⚠ Onceki hali `while (k != onceki)` idi ve x = n*n - 1 bicimindeki
+    //   girdilerde iki deger arasinda SALINARAK sonsuza kadar donuyordu
+    //   (x=8, 24, 48, 80, 120, ... ; 120.000 kombinasyonun 1958'i takiliyordu).
+    uint64_t k = x, k1 = (k + x / k) / 2;
+    while (k1 < k) { k = k1; k1 = (k + x / k) / 2; }
     return (int32_t)k;
 }
 

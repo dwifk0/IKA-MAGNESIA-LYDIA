@@ -59,6 +59,23 @@ int main() {
     t::esit("ivme 50000, pay 100 -> 3162", 3162, guvenli_hiz(50000, 100));
     t::esit("pay yoksa hiz yok",              0, guvenli_hiz(50000, 0));
     t::esit("pay negatifse hiz yok",          0, guvenli_hiz(50000, -5));
+
+    // ⚠ GERILEME TESTI: x = 2*ivme*pay degeri n*n - 1 bicimini aldiginda
+    // eski Newton durma olcutu iki deger arasinda salinip ASLA durmuyordu.
+    // Asagidakilerin her biri o bicimde bir x uretiyor; donen deger
+    // floor(sqrt(x)) olmali ve en onemlisi: fonksiyon DONMELI.
+    t::esit("x=8  (3*3-1)   -> 2",   2, guvenli_hiz(1, 4));
+    t::esit("x=24 (5*5-1)   -> 4",   4, guvenli_hiz(1, 12));
+    t::esit("x=48 (7*7-1)   -> 6",   6, guvenli_hiz(1, 24));
+    t::esit("x=80 (9*9-1)   -> 8",   8, guvenli_hiz(1, 40));
+    t::esit("x=120 (11*11-1)-> 10", 10, guvenli_hiz(1, 60));
+    t::esit("x=168 (13*13-1)-> 12", 12, guvenli_hiz(1, 84));
+    // Tam kareler ve en kucuk girdiler de dogru kalsin.
+    // (x = 2*ivme*pay her zaman CIFT'tir, tam kareler bu yuzden cift kareler.)
+    t::esit("x=4  tam kare  -> 2",   2, guvenli_hiz(1, 2));
+    t::esit("x=16 tam kare  -> 4",   4, guvenli_hiz(1, 8));
+    t::esit("x=36 tam kare  -> 6",   6, guvenli_hiz(1, 18));
+    t::esit("x=2  en kucuk  -> 1",   1, guvenli_hiz(1, 1));
     // Bu degeri asan bir hiz, sinira carpmadan duramaz.
     return t::rapor("direksiyon");
 }

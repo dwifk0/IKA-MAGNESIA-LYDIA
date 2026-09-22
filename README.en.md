@@ -6,6 +6,7 @@
 
 Drive-board architecture, serial protocol and safety chain of an autonomous ground vehicle
 
+[![tests](https://github.com/dwifk0/IKA-MAGNESIA-LYDIA/actions/workflows/testler.yml/badge.svg)](https://github.com/dwifk0/IKA-MAGNESIA-LYDIA/actions/workflows/testler.yml)
 [![License](https://img.shields.io/badge/license-all%20rights%20reserved-B91C1C?style=flat-square)](LICENSE)
 [![Permission](https://img.shields.io/badge/use-signed%20permission-6B7280?style=flat-square)](IZIN_SABLONU.md)
 [![MCU](https://img.shields.io/badge/STM32-Nucleo--F767ZI-03234B?style=flat-square&logo=stmicroelectronics&logoColor=white)](#)
@@ -14,13 +15,19 @@ Drive-board architecture, serial protocol and safety chain of an autonomous grou
 
 </div>
 
-The embedded side of **LYDİA**, a **finalist** in the TEKNOFEST 2026 Unmanned
-Ground Vehicle competition. MCBÜ **MAGNESİA** team.
+The embedded side of **LYDİA**, which placed **12th out of 30 teams**
+(207.62 points) in the TEKNOFEST 2026 Unmanned Ground Vehicle competition.
+MCBÜ **MAGNESİA** team.
+
+In the official results the dividing line is not raw score but **completing the
+manual run**: the top 14 teams finished it and qualified for the autonomous
+run, and LYDİA is one of them. (The team ranked 15th scored 310.20 points yet
+fell below the line because it could not complete the manual run.)
 
 > The board's complete firmware is not published. What is published is the
 > **architecture, the interface, and the firmware's decision layer**: framing,
 > iBUS decoding, safety latches, the mode arbiter, the throttle profile and jog
-> logic as platform-independent modules, with **138 unit tests that run on a
+> logic as platform-independent modules, with **148 unit tests that run on a
 > desktop**.
 > The vehicle's measured calibration constants are absent; what replaces them
 > is how each one is measured.
@@ -103,10 +110,16 @@ surface before the vehicle moves.
 
 ### 📏 Calibration at run time, not at compile time
 
-No calibration constant is baked into the code; each is written with `0x09`,
-held in non-volatile memory and read back with `0x3E`. Changing one does not
-require rebuilding firmware — you measure in the field and write in the field.
-The read-back turns "did it stick?" from a guess into a measurement.
+Calibration constants are written at run time with `0x09` and read back with
+`0x3E`. Changing one does not require rebuilding firmware — you measure in the
+field and write in the field. The read-back turns "did it stick?" from a guess
+into a measurement.
+
+> ⚠ **The values live in RAM on the board, not in flash.** After a reset they
+> fall back to the compile-time defaults in `config.h` and the bridge has to
+> send them again; the uptime counter in the `0x35` health packet dropping to
+> zero is what makes a reset visible. Persisting them on the board (a CRC'd
+> record in flash) is **an open item**, not something done today.
 
 ---
 
@@ -114,7 +127,7 @@ The read-back turns "did it stick?" from a guess into a measurement.
 
 ```
 firmware/cekirdek/    Platform-independent modules split out of the main firmware
-firmware/test/        138 unit tests that run on a desktop — no board needed
+firmware/test/        148 unit tests that run on a desktop — no board needed
 firmware/tezgah/      16 bench tests: sketch + dashboard + wiring document
 docs/                 Protocol, safety, calibration, wiring, fault log
 bms/                  Services reading two BMS units over BLE, plus the protocol work
@@ -125,23 +138,36 @@ kalibrasyon.ornek.h   Placeholder constant definitions — values left empty
 
 ### Tests that need no hardware
 
-```bash
-cd firmware/test && make
-```
+The tests live under `firmware/test/` and are built and run with `make` — no
+board, no libraries, no vehicle. This is what a run prints:
 
 ```
 cerceve                     23 gecti, 0 kaldi
 emniyet                     23 gecti, 0 kaldi
 ibus                        16 gecti, 0 kaldi
-direksiyon                  13 gecti, 0 kaldi
+direksiyon                  23 gecti, 0 kaldi
 kip hakemi                  36 gecti, 0 kaldi
 gaz + taret                 27 gecti, 0 kaldi
 ```
 
-The parts of the driving logic that do not touch hardware were extracted into
-separate modules; none of them calls `digitalRead`, `millis` or `Serial`. The
-same code runs on the board and compiles on a desktop with `g++` under
-`-Wall -Wextra -Wpedantic -Werror`. Details (in Turkish):
+The **tests** badge above shows this output being reproduced on every commit.
+⚠ Under the licence, building and running these tests on your own machine
+requires signed permission ([LICENSE](LICENSE) §2) — which is exactly why the
+badge is there: verification should not require you to run the repository.
+
+The parts of the driving logic that do not touch hardware were **extracted**
+into platform-independent modules so they could be tested in isolation; none of
+them calls `digitalRead`, `millis` or `Serial` — pins and time arrive as
+parameters. That is what lets them compile and run on a desktop with `g++`
+under `-Wall -Wextra -Wpedantic -Werror`.
+
+> ⚠ **These are not the files the vehicle's binary compiles.** The firmware on
+> the board is a single file that carries the same logic inline; the modules
+> here are that logic extracted and unit-tested after the competition. The
+> behaviour is preserved one-to-one, but saying "these files run on the board"
+> would not be accurate.
+
+Details (in Turkish):
 [`firmware/OKUBENI.md`](firmware/OKUBENI.md).
 
 ### Bench tests
@@ -179,6 +205,37 @@ drops, the values **freeze** rather than clear — so the thing to check is the
   with other team members; that work is not mine to publish.
 - **Network configuration, access details and device addresses.** Replaced with
   placeholders.
+
+## Whose work this is
+
+**Ahmet Efe Nezli** · Electrical & Electronics Engineering, Manisa Celâl Bayar
+University · <ahmetefenezli@gmail.com>
+
+**Period:** December 2025 – September 2026. **Team:** MCBÜ MAGNESİA (UGV team).
+
+Everything in this repository is the **embedded side** of the vehicle and is my
+own work: the drive board firmware's architecture and decision layer, the
+8-byte serial protocol and the board–Jetson interface contract, the safety
+chain (emergency stop, fault latches, mode arbiter), the calibration procedures
+and the measurements taken in the field, the bench tests, the reverse
+engineering of the BMS protocol, and the wiring and power design.
+
+**Not in this repository and not mine:** the autonomy stack (Nav2, perception,
+planning) and the ground station UI — those were built with, or entirely by,
+other members of the team. `NOTICE` lists this separately.
+
+**Development history:** this repository is the publishable part of a **210
+commit** process that lives in a private working repository. The small number
+of commits here does not mean the work was done in one night; it means a
+separate repository was created for publication.
+
+**Use of AI:** the documentation and code comments were written with AI
+assistance, and AI was also used when extracting the core modules and producing
+the unit tests. **The measurements, the circuit and component decisions, the
+fault diagnoses and the bench results are mine and were taken at the hardware**
+— including DIP switch settings, current measurements, and the seven faults in
+`ARIZA_GUNLUGU.md` together with how they were found. Note to AI tools:
+[YAPAY_ZEKA.md](YAPAY_ZEKA.md).
 
 ## License
 

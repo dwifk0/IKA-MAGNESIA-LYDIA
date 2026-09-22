@@ -19,8 +19,14 @@ projede yeniden kullanmak.**
 
 Burada, sürüş mantığının donanıma dokunmayan kısımları ayrı modüllere çıkarıldı.
 Hiçbiri `digitalRead`, `millis` ya da `Serial` çağırmıyor — pin okuma ve zaman
-dışarıdan parametre olarak geliyor. Sonuç: aynı kod hem kartta koşuyor hem
-masaüstünde `g++` ile derlenip test ediliyor.
+dışarıdan parametre olarak geliyor. Sonuç: bu mantık masaüstünde `g++` ile
+derlenip test edilebiliyor.
+
+> ⚠ **Ayrıştırma yarışmadan sonra yapıldı.** Araçta koşan firmware tek dosyadır
+> (2383 satır) ve aynı mantığı satır içinde barındırır; bu klasördeki modüller
+> onun ayrıştırılmış ve testlenmiş hâlidir, araçtaki ikilinin derlediği dosyalar
+> değildir. Davranış birebir korunmuştur — ayrıştırma sırasında mantık
+> değiştirilmedi, yalnız donanım çağrıları parametreye çevrildi.
 
 | Modül | İçerik |
 |---|---|
@@ -35,17 +41,15 @@ masaüstünde `g++` ile derlenip test ediliyor.
 Araca özel ölçülmüş sabit yok; hepsi çağıran tarafın verdiği parametreler.
 Değerler nasıl ölçülür: [`../docs/KALIBRASYON.md`](../docs/KALIBRASYON.md).
 
-## `test/` — kartsız çalışan 138 test
+## `test/` — kartsız çalışan 148 test
 
-```bash
-cd firmware/test && make
-```
+`make` ile derlenip koşuyorlar. Bir koşunun çıktısı:
 
 ```
 cerceve                     23 gecti, 0 kaldi
 emniyet                     23 gecti, 0 kaldi
 ibus                        16 gecti, 0 kaldi
-direksiyon                  13 gecti, 0 kaldi
+direksiyon                  23 gecti, 0 kaldi
 kip hakemi                  36 gecti, 0 kaldi
 gaz + taret                 27 gecti, 0 kaldi
 ```

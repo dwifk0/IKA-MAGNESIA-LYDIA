@@ -6,6 +6,7 @@
 
 Otonom kara aracının sürüş kartı mimarisi, seri protokolü ve emniyet zinciri
 
+[![testler](https://github.com/dwifk0/IKA-MAGNESIA-LYDIA/actions/workflows/testler.yml/badge.svg)](https://github.com/dwifk0/IKA-MAGNESIA-LYDIA/actions/workflows/testler.yml)
 [![Lisans](https://img.shields.io/badge/lisans-t%C3%BCm%20haklar%C4%B1%20sakl%C4%B1d%C4%B1r-B91C1C?style=flat-square)](LICENSE)
 [![İzin](https://img.shields.io/badge/kullan%C4%B1m-imzal%C4%B1%20izinle-6B7280?style=flat-square)](IZIN_SABLONU.md)
 [![MCU](https://img.shields.io/badge/STM32-Nucleo--F767ZI-03234B?style=flat-square&logo=stmicroelectronics&logoColor=white)](#)
@@ -14,13 +15,18 @@ Otonom kara aracının sürüş kartı mimarisi, seri protokolü ve emniyet zinc
 
 </div>
 
-TEKNOFEST 2026 İnsansız Kara Aracı yarışmasında **finalist** olan **LYDİA**
-aracının gömülü tarafı. MCBÜ **MAGNESİA** takımı.
+TEKNOFEST 2026 İnsansız Kara Aracı yarışmasında **30 takım arasında 12.**
+olan (207,62 puan) **LYDİA** aracının gömülü tarafı. MCBÜ **MAGNESİA** takımı.
+
+Resmî sonuç tablosunda ayırt edici ölçüt ham puan değil, **manuel koşuyu
+bitirmek**: ilk 14 takım manuel koşuyu tamamlayarak otonom koşuya hak kazandı,
+LYDİA o 14'ün içinde. (15. sıradaki takım 310,20 puan aldığı hâlde koşuyu
+tamamlayamadığı için çizginin altında kaldı.)
 
 > Kartın tam firmware'i yayımlanmamıştır. Yayımlanan şey **mimari, arayüz ve
 > firmware'in karar katmanı**: çerçeveleme, iBUS çözümü, emniyet mandalları,
 > kip hakemi, gaz profili ve jog mantığı platformdan bağımsız modüller
-> hâlinde, **masaüstünde koşan 138 birim testiyle** birlikte. Araca ait ölçülmüş
+> hâlinde, **masaüstünde koşan 148 birim testiyle** birlikte. Araca ait ölçülmüş
 > kalibrasyon sayıları yer almaz; yerlerine nasıl ölçüldükleri yazılıdır.
 
 ---
@@ -98,10 +104,15 @@ araç hareket etmeden ortaya çıkar.
 
 ### 📏 Kalibrasyon derlemede değil, çalışma anında
 
-Hiçbir kalibrasyon sabiti koda gömülü değildir; `0x09` ile yazılır, kalıcı
-bellekte tutulur, `0x3E` ile geri okunur. Sabit değişince firmware yeniden
-derlenmez — sahada ölçüp sahada yazarsınız. Geri okuma, "yazdım ama tuttu mu"
-sorusunu tahminden çıkarır.
+Kalibrasyon sabitleri çalışma anında `0x09` ile yazılır ve `0x3E` ile geri
+okunur. Sabit değişince firmware yeniden derlenmez — sahada ölçüp sahada
+yazarsınız. Geri okuma, "yazdım ama tuttu mu" sorusunu tahminden çıkarır.
+
+> ⚠ **Değerler kartta yalnız RAM'de tutulur, flash'a yazılmaz.** Reset sonrası
+> `config.h`'deki derleme varsayılanlarına dönerler ve köprünün yeniden
+> göndermesi gerekir; `0x35` sağlık paketindeki çalışma süresi sayacının sıfıra
+> dönmesi reseti görünür kılar. Sabitleri karta kalıcı yazmak (flash'ta CRC'li
+> bir kayıt) **açık bir maddedir**, bugün yapılmıyor.
 
 ---
 
@@ -109,7 +120,7 @@ sorusunu tahminden çıkarır.
 
 ```
 firmware/cekirdek/    Ana firmware'den ayrılmış platformdan bağımsız modüller
-firmware/test/        Masaüstünde koşan 138 birim test — kart gerekmez
+firmware/test/        Masaüstünde koşan 148 birim test — kart gerekmez
 firmware/tezgah/      16 tezgâh testi: sketch + pano + kablo belgesi
 docs/                 Protokol, emniyet, kalibrasyon, bağlantı, arıza günlüğü
 bms/                  İki BMS'i BLE üzerinden okuyan servisler ve protokol çözümü
@@ -120,23 +131,36 @@ kalibrasyon.ornek.h   Sabitlerin yer tutucu tanımları — değerler boş
 
 ### Kartsız çalışan testler
 
-```bash
-cd firmware/test && make
-```
+Testler `firmware/test/` altında, `make` ile derlenip koşuyor — kart,
+kütüphane ve araç gerekmiyor. Her koşunun ürettiği çıktı:
 
 ```
 cerceve                     23 gecti, 0 kaldi
 emniyet                     23 gecti, 0 kaldi
 ibus                        16 gecti, 0 kaldi
-direksiyon                  13 gecti, 0 kaldi
+direksiyon                  23 gecti, 0 kaldi
 kip hakemi                  36 gecti, 0 kaldi
 gaz + taret                 27 gecti, 0 kaldi
 ```
 
-Sürüş mantığının donanıma dokunmayan kısımları ayrı modüllere çıkarıldı;
-hiçbiri `digitalRead`, `millis` ya da `Serial` çağırmıyor. Aynı kod hem kartta
-koşuyor hem `g++` ile masaüstünde test ediliyor
-(`-Wall -Wextra -Wpedantic -Werror`). Ayrıntı:
+Bu çıktının her commit'te yeniden üretildiği, yukarıdaki **testler** rozetinden
+görülebilir. ⚠ Lisans gereği testleri kendi makinenizde derleyip çalıştırmak
+imzalı izne bağlıdır ([LICENSE](LICENSE) §2) — rozet tam da bu yüzden var:
+doğrulama, depoyu çalıştırmanızı gerektirmesin.
+
+Kartta koşan sürüş mantığının donanıma dokunmayan kısımları, ayrı test
+edilebilsin diye platformdan bağımsız modüllere **çıkarıldı**; hiçbiri
+`digitalRead`, `millis` ya da `Serial` çağırmıyor, pin ve zaman dışarıdan
+parametre olarak geliyor. Böylece `g++` ile masaüstünde derlenip test
+ediliyorlar (`-Wall -Wextra -Wpedantic -Werror`).
+
+> ⚠ **Bunlar araçtaki ikilinin derlediği dosyalar değildir.** Araçta koşan
+> firmware tek dosyadır ve aynı mantığı satır içinde barındırır; buradaki
+> modüller o mantığın yarışmadan sonra ayrıştırılmış ve testlenmiş hâlidir.
+> Davranış birebir korunmuştur, ama "kartta bu dosyalar koşuyor" demek
+> doğru olmaz.
+
+Ayrıntı:
 [`firmware/OKUBENI.md`](firmware/OKUBENI.md).
 
 ### Tezgâh testleri
@@ -172,6 +196,35 @@ verinin **yaşına** bakmak gerekiyor.
   geliştirildi; onların emeği bana ait değil.
 - **Ağ yapılandırması, erişim bilgileri ve cihaz adresleri.** Yer tutucuyla
   değiştirildi.
+
+## Bu depodaki iş kime ait
+
+**Ahmet Efe Nezli** · Elektrik-Elektronik Mühendisliği, Manisa Celâl Bayar
+Üniversitesi · <ahmetefenezli@gmail.com>
+
+**Dönem:** Aralık 2025 – Eylül 2026. **Takım:** MCBÜ MAGNESİA (İKA takımı).
+
+Bu depodaki her şey aracın **gömülü tarafıdır** ve bana aittir: sürüş kartı
+firmware'inin mimarisi ve karar katmanı, 8 baytlık seri protokol ve kart–Jetson
+arayüz sözleşmesi, emniyet zinciri (acil stop, arıza mandalları, kip hakemi),
+kalibrasyon yordamları ve sahada alınan ölçümler, tezgâh testleri, BMS
+protokolünün tersine mühendisliği, kablolama ve elektronik besleme tasarımı.
+
+**Bu depoda olmayan ve bana ait olmayan:** otonomi paketi (Nav2, algı, rota) ve
+yer istasyonu arayüzü — onlar takımın diğer üyeleriyle ortak ya da tümüyle
+onların işi. `NOTICE` bunu ayrıca listeliyor.
+
+**Geliştirme geçmişi:** bu depo, özel çalışma deposundaki **210 commit'lik**
+sürecin yayımlanabilir kısmının derlenmiş hâlidir. Buradaki commit sayısının az
+olması işin bir gecede yapıldığı anlamına gelmez; yayın için ayrı bir depo
+açıldığı anlamına gelir.
+
+**Yapay zekâ kullanımı:** belgeler ve kod yorumları yapay zekâ destekli yazıldı,
+kodun ayrıştırılmasında ve testlerin üretilmesinde de yapay zekâdan
+yararlanıldım. **Ölçümler, devre ve bileşen kararları, arıza teşhisleri ve
+tezgâh sonuçları bana aittir ve donanım başında alınmıştır** — DIP anahtar
+konumları, akım ölçümleri, `ARIZA_GUNLUGU.md`'deki yedi arıza ve nasıl
+bulundukları dahil. Yapay zekâya not: [YAPAY_ZEKA.md](YAPAY_ZEKA.md).
 
 ## Lisans
 
