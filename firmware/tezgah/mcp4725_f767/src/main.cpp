@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 // MCP4725 tezgah testi — NUCLEO-F767ZI, I2C1 (SCL=PB8, SDA=PB9)
 //
 // ⚠ VOUT KONTROLCUYE BAGLANMAYACAK. Bu test yalnizca multimetreyle yapilir.

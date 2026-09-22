@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 /*
  * step_f767 — DİREKSİYON STEP MOTORU TEZGAH TESTİ (NUCLEO-F767ZI)
  *

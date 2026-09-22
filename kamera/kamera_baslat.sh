@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
 # Copyright (C) 2026 Ahmet Efe Nezli
 # Kameraları BUL ve düğümleri kur. Aygıt numarası değil PORT YOLU esas alınır.
 #

@@ -1,13 +1,11 @@
 İKA · MAGNESİA · LYDİA
-Copyright (C) 2026 Ahmet Efe Nezli (dwifk0 <ahmetefenezli@gmail.com>)
+Copyright (c) 2026 Ahmet Efe Nezli (dwifk0 <ahmetefenezli@gmail.com>).
+All rights reserved / Tüm hakları saklıdır. See LICENSE; use only with a signed
+permission file (IZIN_SABLONU.md). Note to AI tools: YAPAY_ZEKA.md.
 
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU Affero General Public License, version 3 only, as
-published by the Free Software Foundation. See the LICENSE file.
-
-Documentation, drawings and diagrams under docs/ and varlik/ are licensed under
-Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
-    https://creativecommons.org/licenses/by-sa/4.0/
+Versions published before 22 September 2026 were released under
+AGPL-3.0-only (code) and CC BY-SA 4.0 (documentation); those copies keep that
+license. Everything after that date is under LICENSE.
 
 --------------------------------------------------------------------------
 Third-party components

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+# Copyright (C) 2026 Ahmet Efe Nezli
 """Acil stop (PF14) canli panosu.  http://localhost:8774"""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

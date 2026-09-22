@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 // FlySky iBUS -> NUCLEO-F767ZI  (UART5_RX = PD2)
 //
 // Bu test "veri geliyor mu" sorusunu DEGIL, su dordunu cevapliyor:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
 # Copyright (C) 2026 Ahmet Efe Nezli
 """
 DALY (elektronik bataryası) → HTTP JSON uç. `jk_servis.py`'nin kardeşi.

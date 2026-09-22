@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 // ACIL STOP tezgah testi — mantar butonun NC blogu -> PF14 (INPUT_PULLUP)
 //
 // Kablolama: NC blogunun `21` -> GND (CN8-11) · `22` -> PF14 (CN12-50, D4).

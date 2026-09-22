@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 // UCTAN UCA GAZ ZINCIRI — FlySky iBUS -> NUCLEO-F767ZI -> MCP4725 -> gaz voltaji
 //
 // ⚠ VOUT KONTROLCUYE BAGLI DEGIL. Multimetre VOUT <-> GND.

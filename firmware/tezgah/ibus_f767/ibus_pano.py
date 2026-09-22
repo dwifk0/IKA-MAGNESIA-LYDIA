@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+# Copyright (C) 2026 Ahmet Efe Nezli
 """FlySky iBUS -> F767ZI canli panosu.  http://localhost:8776"""
 
 import sys, os

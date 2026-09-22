@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 // F767ZI — ilk açılış / yükleme yolu doğrulaması.
 // Karta HİÇBİR ŞEY bağlı olmadan çalıştırılır.
 //   Görsel ölçüt : üç LED sırayla yanıp söner (yeşil → mavi → kırmızı)

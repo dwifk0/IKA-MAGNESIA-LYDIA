@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 /*
   Traksiyon akımı ölçümü — ACS758 + Arduino (Mega ya da boşta bir Uno/Nano)
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 // F767ZI PIN TARAYICI — "veri var mi, hangi pinde?"
 //
 // 29 Agustos'ta Mega'da yanlis izi bu yontem cozmustu: iBUS sinyali A0'daydi,

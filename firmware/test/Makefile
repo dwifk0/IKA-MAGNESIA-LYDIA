@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
 # Masaustunde kosan birim testler — kart, kutuphane ve arac gerekmez.
 #
 #   make        derle ve kosturur

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-dwifk0-All-Rights-Reserved
+// Copyright (C) 2026 Ahmet Efe Nezli
 // GAZ — F767ZI dahili DAC tezgah testi.  PA4 = DAC1_OUT1 (CN11-32, D24)
 //
 // MCP4725 dusuruldu; gaz artik dahili DAC'tan. Bu test kontrolcuye BAGLANMADAN,
